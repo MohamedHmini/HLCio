@@ -91,9 +91,10 @@ DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *df, char* line, char* tokenizer){
 
 	DF_ELEMENT_CONTAINER tokenized_line = NULL;
 	DF_ELEMENT ch;
-	ch.Str_element = strtok(line, tokenizer);
+	ch.node.Str = strtok(line, tokenizer);
+	ch.type = DF_ELEMENT_TStr;
 	int i = 1;
-	while(ch.Str_element != NULL){
+	while(ch.node.Str != NULL){
 		
 		DF_ELEMENT_CONTAINER checker = (DF_ELEMENT_CONTAINER) realloc(tokenized_line, sizeof(DF_ELEMENT) * i);
 		if(checker == NULL){
@@ -104,8 +105,8 @@ DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *df, char* line, char* tokenizer){
 			tokenized_line = checker;
 		}
 		
-		tokenized_line[i - 1].Str_element = ch.Str_element;
-		ch.Str_element = strtok(NULL, tokenizer);
+		tokenized_line[i - 1].node.Str = ch.node.Str;
+		ch.node.Str = strtok(NULL, tokenizer);
 		i++;
 	}
 	// printf("\n");

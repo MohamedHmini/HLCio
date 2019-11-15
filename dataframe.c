@@ -25,6 +25,30 @@ DATAFRAME *Dataframe(
 }
 
 
+DF_ELEMENT df_element_copy(DF_ELEMENT source_element){
+	DF_ELEMENT copy;
+
+	switch(source_element.type){
+		case DF_ELEMENT_TArray:{
+			copy.type = source_element.type;
+			copy.node.Arr = malloc(sizeof(Array));
+			copy.node.Arr->size = source_element.node.Arr->size;
+			copy.node.Arr->data = malloc(sizeof(DF_ELEMENT) * copy.node.Arr->size);
+			
+			for(int i = 0; i < copy.node.Arr->size; i++){
+				copy.node.Arr->data[i] = df_element_copy(source_element.node.Arr->data[i]);
+			}
+
+		}break;
+		default:{
+			copy = source_element;
+		}break;
+	}
+
+	return copy;
+
+}
+
 
 DATAFRAME *df_full(
 	int rows, 
@@ -45,7 +69,7 @@ DATAFRAME *df_full(
 		int k = 0;
 
 		while(k < cols){
-			df->data[j][k] = init_val;
+			df->data[j][k] = df_element_copy(init_val);
 			k++;
 		}	
 
@@ -57,13 +81,18 @@ DATAFRAME *df_full(
 
 
 
+void df_update(DATAFRAME *df){
+
+}
+
+
 
 void DF_STR_TO_INT(DF_ELEMENT* df_element){
-	df_element->Int_element = atoi(df_element->Str_element);
+	df_element->node.Int = atoi(df_element->node.Str);
 }
 
 void DF_INT_TO_STR(DF_ELEMENT* df_element){
-	itoa(df_element->Int_element, df_element->Str_element, 10);
+	itoa(df_element->node.Int, df_element->node.Str, 10);
 }
 
 // this function allows a mapping of elements of a particular dataframe : 
@@ -146,7 +175,7 @@ void display_df(DATAFRAME *df){
 				printf("%d ", df->data[i][j] );
 			else
 			{
-				printf("%d ", df->data[i][j].Int_Array_element[2]);
+				printf("%d ", df->data[i][j].node.Arr->data[0].node.Arr->data[0].node.Int);
 			}
 			
 		}
