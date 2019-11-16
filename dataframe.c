@@ -25,6 +25,17 @@ DATAFRAME *Dataframe(
 }
 
 
+void df_free(DATAFRAME *df){
+	for(int i = 0; i<df->len_rows; i++){
+		for(int j = 0; j< df->len_cols ;j++){
+			arrfree(&df->data[i][j]);
+		}
+		free(df->data[i]);
+	}	
+	free(df);
+}
+
+
 DF_ELEMENT arrcreate(int size){
 	DF_ELEMENT e;
     e.type = DF_ELEMENT_TArray;
@@ -42,13 +53,25 @@ void arrpush(DF_ELEMENT *arr, DF_ELEMENT e){
 }
 
 
+void arrfree(DF_ELEMENT *arr){
+	switch(arr->type){
+		case DF_ELEMENT_TArray:{
+			for(int i = 0;i<arr->node.Arr->size; i++){
+				arrfree(&arr->node.Arr->data[i]);
+			}
+			free(arr->node.Arr);
+		}break;
+		default:{
+			// ..
+		}break;
+	}
+}
+
+
 void arrpop(DF_ELEMENT *arr){
 	if(arr->node.Arr->size > 0){
 		arr->node.Arr->size--;
-		for(int i = 0; i< arr->node.Arr->size; i++){
-			arr->node.Arr->data[i] = arr->node.Arr->data[i + 1];
-		}
-		
+		// arr->node.Arr->data[arr->node.Arr->size] = NULL;
 	}
 }
 

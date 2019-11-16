@@ -68,8 +68,10 @@ typedef struct DATAFRAME{
 
 
 DATAFRAME *Dataframe(int,int , DF_DATA_CONTAINER );
+void df_free(DATAFRAME *df);
 DF_ELEMENT arrcreate(int);
 void arrpush(DF_ELEMENT*, DF_ELEMENT);
+void arrfree(DF_ELEMENT*);
 void arrpop(DF_ELEMENT*);
 DF_ELEMENT df_element_copy(DF_ELEMENT);
 DATAFRAME *df_full(int, int ,DF_ELEMENT_TYPE ,DF_ELEMENT);

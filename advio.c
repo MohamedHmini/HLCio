@@ -50,7 +50,7 @@ char* get_line(FILE *file){
 	if(line != NULL)
 		line[buff] = '\0';
 
-	printf("%s\n", line);
+	// printf("%s\n", line);
 	return line;
 }
 
@@ -81,7 +81,7 @@ char** read_lines(FILE *file){
 		
 	}
 
-	printf("done\n");
+	// printf("done\n");
 	lines[row_i] = NULL;
 	return lines;
 }
@@ -137,10 +137,10 @@ void tokenize(DATAFRAME *df, char** lines, char* tokenizer){
 
 		i++;
 		line = lines[i - 1];
-		printf("i:%d, line:%s\n",i - 1,line);
+		// printf("i:%d, line:%s\n",i - 1,line);
 		
 	}
-
+	
 	df->len_rows = i - 1;
 	df->type = DF_ELEMENT_TStr;
 	df->data = tokenized_lines;
