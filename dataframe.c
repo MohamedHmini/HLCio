@@ -25,6 +25,34 @@ DATAFRAME *Dataframe(
 }
 
 
+DF_ELEMENT arrcreate(int size){
+	DF_ELEMENT e;
+    e.type = DF_ELEMENT_TArray;
+    e.node.Arr = malloc(sizeof(Array));
+    e.node.Arr->size = size;
+    e.node.Arr->data = malloc(sizeof(DF_ELEMENT) * size);
+	return e;
+}
+
+
+void arrpush(DF_ELEMENT *arr, DF_ELEMENT e){
+	arr->node.Arr->size++;
+	arr->node.Arr->data = realloc(arr->node.Arr->data, sizeof(DF_ELEMENT) * (arr->node.Arr->size));
+	arr->node.Arr->data[arr->node.Arr->size - 1] = e;
+}
+
+
+void arrpop(DF_ELEMENT *arr){
+	if(arr->node.Arr->size > 0){
+		arr->node.Arr->size--;
+		for(int i = 0; i< arr->node.Arr->size; i++){
+			arr->node.Arr->data[i] = arr->node.Arr->data[i + 1];
+		}
+		
+	}
+}
+
+
 DF_ELEMENT df_element_copy(DF_ELEMENT source_element){
 	DF_ELEMENT copy;
 
@@ -175,7 +203,7 @@ void display_df(DATAFRAME *df){
 				printf("%d ", df->data[i][j] );
 			else
 			{
-				printf("%d ", df->data[i][j].node.Arr->data[0].node.Arr->data[0].node.Int);
+				printf("%d ", df->data[i][j].node.Arr->data[0].node.Arr->data[2].node.Int);
 			}
 			
 		}
