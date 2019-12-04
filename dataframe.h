@@ -11,6 +11,7 @@
 
 
 // this lib is based on dataframes as a datastructure to better control and manipulate data/!
+#include<stdbool.h>
 
 #ifndef DATAFRAME_H
 #define DATAFRAME_H
@@ -73,22 +74,29 @@ typedef struct GENERATOR{
 }GENERATOR;
 
 
+typedef struct CMP_RESULT{
+	DF_ELEMENT best;
+	int index;
+}CMP_RESULT;
+
 
 DATAFRAME *Dataframe(int,int , DF_DATA_CONTAINER );
 void df_free(DATAFRAME *df);
 DF_ELEMENT arrcreate(int);
+DF_ELEMENT arrinit(int, DF_ELEMENT);
 void arrpush(DF_ELEMENT*, DF_ELEMENT);
 void arrfree(DF_ELEMENT*);
 void arrpop(DF_ELEMENT*);
 void arrshow(DF_ELEMENT*);
+CMP_RESULT arrcmp(DF_ELEMENT*, CMP_RESULT (*)());
 DF_ELEMENT df_element_copy(DF_ELEMENT);
 DATAFRAME *df_full(int, int ,DF_ELEMENT_TYPE ,DF_ELEMENT);
 void df_remove_column(DATAFRAME *, int);
 void df_remove_row(DATAFRAME *, int);
 void DF_STR_TO_INT(DF_ELEMENT*);
 void DF_INT_TO_STR(DF_ELEMENT*);
-void df_map(DATAFRAME *,void (*fun)(DF_ELEMENT* df_element), ...);
-void df_retype(DATAFRAME *, DF_ELEMENT_TYPE );
+void df_map(DATAFRAME *,void (*fun)(DF_ELEMENT* df_element), int);
+void df_retype(DATAFRAME *, DF_ELEMENT_TYPE, int);
 void display_df(DATAFRAME *);
 void show(DATAFRAME *);
 

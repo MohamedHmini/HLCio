@@ -36,6 +36,7 @@ void df_free(DATAFRAME *df){
 }
 
 
+
 DF_ELEMENT arrcreate(int size){
 	DF_ELEMENT e;
     e.type = DF_ELEMENT_TArray;
@@ -45,6 +46,14 @@ DF_ELEMENT arrcreate(int size){
 	return e;
 }
 
+
+DF_ELEMENT arrinit(int size, DF_ELEMENT initval){
+	DF_ELEMENT arr = arrcreate(size);
+	for(int i = 0; i<arr.node.Arr->size; i++){
+		arr.node.Arr->data[i] = initval;
+	}
+	return arr;
+}	
 
 void arrpush(DF_ELEMENT *arr, DF_ELEMENT e){
 	arr->node.Arr->size++;
@@ -79,9 +88,23 @@ void arrpop(DF_ELEMENT *arr){
 void arrshow(DF_ELEMENT *arr){
 	printf("\n[ ");
 	for(int i = 0; i < arr->node.Arr->size; i++){
-		printf("%s", arr->node.Arr->data[0].node.Str);
+		printf("%d ", arr->node.Arr->data[i].node.Int);
 	}
-	printf(" ]");
+	printf("]");
+}
+
+
+
+CMP_RESULT arrcmp(DF_ELEMENT* arr, CMP_RESULT (*cmp)()){
+	CMP_RESULT r;
+	r.best = arr->node.Arr->data[0];
+	r.index = 0;
+
+	for(int i = 1; i < arr->node.Arr->size; i++){
+		r = cmp(r.best, arr->node.Arr->data[i], r.index, i);
+	}
+
+	return r;
 }
 
 
@@ -171,7 +194,7 @@ void DF_INT_TO_STR(DF_ELEMENT* df_element){
 void df_map(
 	DATAFRAME *df, 
 	void (*fun)(DF_ELEMENT* df_element),
-	...
+	int start_from_row
 	){
 
 	int i,j;
@@ -182,7 +205,7 @@ void df_map(
 //	cfun p = va_arg(cfuns, cfun);
 //	(*p)();
 
-	for(i = 0; i< df->len_rows;i++){
+	for(i = start_from_row; i< df->len_rows;i++){
 		for(j = 0; j< df->len_cols; j++){
 			fun( &df->data[i][j] );
 		}
@@ -195,17 +218,17 @@ void df_map(
 }
 
 
-void df_retype(DATAFRAME *df, DF_ELEMENT_TYPE type){
+void df_retype(DATAFRAME *df, DF_ELEMENT_TYPE type, int start_from_row){
 	// if col == -1 then we r retyping the whole dataframe with the same type : 
 
 	switch(type){
 		case DF_ELEMENT_TStr:{
 			df->type = type;
-			df_map(df, DF_INT_TO_STR);
+			df_map(df, DF_INT_TO_STR, start_from_row);
 		}break;
 		case DF_ELEMENT_TInt:{
 			df->type = type;
-			df_map(df, DF_STR_TO_INT);
+			df_map(df, DF_STR_TO_INT, start_from_row);
 		}break;
 		case DF_ELEMENT_TDouble:{
 
@@ -240,6 +263,9 @@ void display_df(DATAFRAME *df){
 		for(j = 0; j< df->len_cols; j++){
 			if(df->type == DF_ELEMENT_TStr){
 				printf("%s ", df->data[i][j].node.Str);
+			}
+			else if(df->type == DF_ELEMENT_TInt){
+				printf("%d ", df->data[i][j].node.Int);
 			}
 			
 		}
