@@ -17,8 +17,9 @@
 
 
 
-struct Array;
+// everything below is considered a container except of DF_NODE(Str, Int and Double) attributes!
 
+struct Array;
 
 
 typedef enum DF_ELEMENT_TYPE {
@@ -65,6 +66,12 @@ typedef struct DATAFRAME{
 
 
 
+typedef struct GENERATOR{
+	DF_ELEMENT (*Next)();
+	DF_ELEMENT current;
+	int size;
+}GENERATOR;
+
 
 
 DATAFRAME *Dataframe(int,int , DF_DATA_CONTAINER );
@@ -73,8 +80,11 @@ DF_ELEMENT arrcreate(int);
 void arrpush(DF_ELEMENT*, DF_ELEMENT);
 void arrfree(DF_ELEMENT*);
 void arrpop(DF_ELEMENT*);
+void arrshow(DF_ELEMENT*);
 DF_ELEMENT df_element_copy(DF_ELEMENT);
 DATAFRAME *df_full(int, int ,DF_ELEMENT_TYPE ,DF_ELEMENT);
+void df_remove_column(DATAFRAME *, int);
+void df_remove_row(DATAFRAME *, int);
 void DF_STR_TO_INT(DF_ELEMENT*);
 void DF_INT_TO_STR(DF_ELEMENT*);
 void df_map(DATAFRAME *,void (*fun)(DF_ELEMENT* df_element), ...);

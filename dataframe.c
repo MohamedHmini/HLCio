@@ -76,6 +76,15 @@ void arrpop(DF_ELEMENT *arr){
 }
 
 
+void arrshow(DF_ELEMENT *arr){
+	printf("\n[ ");
+	for(int i = 0; i < arr->node.Arr->size; i++){
+		printf("%s", arr->node.Arr->data[0].node.Str);
+	}
+	printf(" ]");
+}
+
+
 DF_ELEMENT df_element_copy(DF_ELEMENT source_element){
 	DF_ELEMENT copy;
 
@@ -136,6 +145,16 @@ void df_update(DATAFRAME *df){
 
 }
 
+
+void df_remove_row(DATAFRAME *df, int index){
+	// df->len_rows--;
+	// df->data[index]
+}
+
+
+void df_remove_column(DATAFRAME *df, int index){
+
+}
 
 
 void DF_STR_TO_INT(DF_ELEMENT* df_element){
@@ -216,17 +235,11 @@ void display_df(DATAFRAME *df){
 	printf("ROWS : %d\n", df->len_rows);
 	printf("COLS : %d\n", df->len_cols);
 
-	for(i = 0; i< df->len_rows;i++){
+	for(i = 1; i< df->len_rows;i++){
 		printf("[ ");
 		for(j = 0; j< df->len_cols; j++){
 			if(df->type == DF_ELEMENT_TStr){
-				printf("%s ", df->data[i][j] );
-			}
-			else if(df->type == DF_ELEMENT_TInt)
-				printf("%d ", df->data[i][j] );
-			else
-			{
-				printf("%d ", df->data[i][j].node.Arr->data[0].node.Arr->data[2].node.Int);
+				printf("%s ", df->data[i][j].node.Str);
 			}
 			
 		}

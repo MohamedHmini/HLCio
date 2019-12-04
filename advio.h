@@ -15,7 +15,7 @@ char* get_line(FILE *);
 char** read_lines(FILE *);
 DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *, char* , char* );
 void tokenize(DATAFRAME *, char** , char* );
-DATAFRAME *csv_to_df(FILE *);
+DATAFRAME *csv_to_df(FILE *, char*);
 
 
 #endif

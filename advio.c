@@ -75,10 +75,9 @@ char** read_lines(FILE *file){
 			lines = checker;
 		}
 		
-
+		printf("%s\n", line);
 		lines[row_i - 1] = line;
 		line = get_line(file);
-		
 	}
 
 	// printf("done\n");
@@ -149,9 +148,9 @@ void tokenize(DATAFRAME *df, char** lines, char* tokenizer){
 
 
 
-DATAFRAME *csv_to_df(FILE *csv){
+DATAFRAME *csv_to_df(FILE *csv, char *delimiter){
 	DATAFRAME *df = Dataframe(0,0,NULL); 
 	char** lines = read_lines(csv);
-	tokenize(df, lines, ",");
+	tokenize(df, lines, delimiter);
 	return df;
 }
