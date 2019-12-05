@@ -15,7 +15,7 @@
 
 #ifndef DATAFRAME_H
 #define DATAFRAME_H
-
+#define randint(min, max) ((rand() % (int)(((max) + 1) - (min))) + (min))
 
 
 // everything below is considered a container except of DF_NODE(Str, Int and Double) attributes!
@@ -89,6 +89,7 @@ void arrfree(DF_ELEMENT*);
 void arrpop(DF_ELEMENT*);
 void arrshow(DF_ELEMENT*);
 CMP_RESULT arrcmp(DF_ELEMENT*, CMP_RESULT (*)());
+bool arrequal(DF_ELEMENT*, DF_ELEMENT*);
 DF_ELEMENT df_element_copy(DF_ELEMENT);
 DATAFRAME *df_full(int, int ,DF_ELEMENT_TYPE ,DF_ELEMENT);
 void df_remove_column(DATAFRAME *, int);

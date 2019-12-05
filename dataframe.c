@@ -50,6 +50,7 @@ DF_ELEMENT arrcreate(int size){
 DF_ELEMENT arrinit(int size, DF_ELEMENT initval){
 	DF_ELEMENT arr = arrcreate(size);
 	for(int i = 0; i<arr.node.Arr->size; i++){
+		DF_ELEMENT copy = df_element_copy(initval);
 		arr.node.Arr->data[i] = initval;
 	}
 	return arr;
@@ -63,17 +64,18 @@ void arrpush(DF_ELEMENT *arr, DF_ELEMENT e){
 
 
 void arrfree(DF_ELEMENT *arr){
-	switch(arr->type){
-		case DF_ELEMENT_TArray:{
-			for(int i = 0;i<arr->node.Arr->size; i++){
-				arrfree(&arr->node.Arr->data[i]);
-			}
-			free(arr->node.Arr);
-		}break;
-		default:{
-			// ..
-		}break;
-	}
+	if(arr != NULL)
+		switch(arr->type){
+			case DF_ELEMENT_TArray:{
+				for(int i = 0;i<arr->node.Arr->size; i++){
+					arrfree(&arr->node.Arr->data[i]);
+				}
+				free(arr->node.Arr);
+			}break;
+			default:{
+				// ..
+			}break;
+		}
 }
 
 
@@ -105,6 +107,20 @@ CMP_RESULT arrcmp(DF_ELEMENT* arr, CMP_RESULT (*cmp)()){
 	}
 
 	return r;
+}
+
+
+bool arrequal(DF_ELEMENT *e1, DF_ELEMENT *e2){
+	bool equal = true;
+
+	for(int i = 0; i < e1->node.Arr->size; i++){
+		if(e1->node.Arr->data[i].node.Int != e2->node.Arr->data[i].node.Int){
+			equal = false;
+			break;
+		}
+	}
+
+	return equal;
 }
 
 

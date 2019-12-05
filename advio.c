@@ -75,7 +75,6 @@ char** read_lines(FILE *file){
 			lines = checker;
 		}
 		
-		printf("%s\n", line);
 		lines[row_i - 1] = line;
 		line = get_line(file);
 	}
