@@ -36,7 +36,7 @@ char* get_line(FILE *file){
 			break;
 		buff++;
 
-		char* checker =  realloc(line, sizeof(char) * buff + 1);
+		char* checker =  realloc(line, sizeof(char) * (buff + 1));
 
 		if(checker == NULL)
 			free(checker);
@@ -47,8 +47,10 @@ char* get_line(FILE *file){
 		
 		line[buff - 1] = c;
 	}
-	if(line != NULL)
+	if(line != NULL){
 		line[buff] = '\0';
+	}
+		
 
 	// printf("%s\n", line);
 	return line;
@@ -64,7 +66,7 @@ char** read_lines(FILE *file){
 	while(line != NULL){
 		// printf("%d\n",row_i);
 		row_i++;
-		char** checker = realloc(lines, sizeof(char*) * row_i + 1);
+		char** checker = realloc(lines, sizeof(char*) * (row_i + 1));
 
 		if(checker == NULL){
 			free(checker);
@@ -89,6 +91,7 @@ DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *df, char* line, char* tokenizer){
 
 	DF_ELEMENT_CONTAINER tokenized_line = NULL;
 	DF_ELEMENT ch;
+	ch.node.Str = NULL;
 	ch.node.Str = strtok(line, tokenizer);
 	ch.type = DF_ELEMENT_TStr;
 	int i = 1;
@@ -97,12 +100,14 @@ DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *df, char* line, char* tokenizer){
 		DF_ELEMENT_CONTAINER checker = (DF_ELEMENT_CONTAINER) realloc(tokenized_line, sizeof(DF_ELEMENT) * i);
 		if(checker == NULL){
 			free(checker);
-			break;}
-		else
-		{
+			break;
+		}
+		else{
 			tokenized_line = checker;
 		}
 		
+		tokenized_line[i - 1].node.Str = NULL;
+		tokenized_line[i - 1].type = ch.type;
 		tokenized_line[i - 1].node.Str = ch.node.Str;
 		ch.node.Str = strtok(NULL, tokenizer);
 		i++;
@@ -124,32 +129,37 @@ void tokenize(DATAFRAME *df, char** lines, char* tokenizer){
 		DF_DATA_CONTAINER checker = (DF_DATA_CONTAINER) realloc(tokenized_lines, sizeof(DF_ELEMENT_CONTAINER) * i);
 		if(checker == NULL){
 			free(checker);
-			break;}
+			break;
+		}
 		else
 		{
 			tokenized_lines = checker;
 		}
-		
+
 		dec = tokenize_line(df, line, tokenizer);
 		tokenized_lines[i - 1] = dec;
-
+		// free(line);
+		
 		i++;
 		line = lines[i - 1];
 		// printf("i:%d, line:%s\n",i - 1,line);
 		
 	}
-	
+	free(line);
 	df->len_rows = i - 1;
 	df->type = DF_ELEMENT_TStr;
+	df->data = NULL;
 	df->data = tokenized_lines;
-
 }
 
 
 
 DATAFRAME *csv_to_df(FILE *csv, char *delimiter){
-	DATAFRAME *df = Dataframe(0,0,NULL); 
-	char** lines = read_lines(csv);
+	DATAFRAME *df = NULL;
+	df = Dataframe(0,0,NULL); 
+	char** lines = NULL;
+	lines = read_lines(csv);
 	tokenize(df, lines, delimiter);
+	free(lines);
 	return df;
 }

@@ -27,11 +27,12 @@ DATAFRAME *Dataframe(
 
 void df_free(DATAFRAME *df){
 	for(int i = 0; i<df->len_rows; i++){
-		for(int j = 0; j< df->len_cols ;j++){
+		for(int j = 0; j< df->len_cols;j++){
 			arrfree(&df->data[i][j]);
 		}
 		free(df->data[i]);
 	}	
+	free(df->data);
 	free(df);
 }
 
@@ -51,7 +52,7 @@ DF_ELEMENT arrinit(int size, DF_ELEMENT initval){
 	DF_ELEMENT arr = arrcreate(size);
 	for(int i = 0; i<arr.node.Arr->size; i++){
 		DF_ELEMENT copy = df_element_copy(initval);
-		arr.node.Arr->data[i] = initval;
+		arr.node.Arr->data[i] = copy;
 	}
 	return arr;
 }	
@@ -62,20 +63,28 @@ void arrpush(DF_ELEMENT *arr, DF_ELEMENT e){
 	arr->node.Arr->data[arr->node.Arr->size - 1] = e;
 }
 
-
+        
 void arrfree(DF_ELEMENT *arr){
-	if(arr != NULL)
+	if(arr != NULL){
 		switch(arr->type){
 			case DF_ELEMENT_TArray:{
 				for(int i = 0;i<arr->node.Arr->size; i++){
 					arrfree(&arr->node.Arr->data[i]);
+					// free(&arr->node.Arr->data[i]);
 				}
+				free(arr->node.Arr->data);
 				free(arr->node.Arr);
 			}break;
+			case DF_ELEMENT_TStr:{
+				// free(arr->node.Str);
+			}break;
 			default:{
-				// ..
+				
 			}break;
 		}
+
+		// free(arr);
+	}
 }
 
 
@@ -125,6 +134,8 @@ bool arrequal(DF_ELEMENT *e1, DF_ELEMENT *e2){
 
 
 DF_ELEMENT df_element_copy(DF_ELEMENT source_element){
+	
+	
 	DF_ELEMENT copy;
 
 	switch(source_element.type){
@@ -197,12 +208,19 @@ void df_remove_column(DATAFRAME *df, int index){
 
 
 void DF_STR_TO_INT(DF_ELEMENT* df_element){
-	df_element->node.Int = atoi(df_element->node.Str);
+	int i = atoi(df_element->node.Str);
+	df_element->node.Int = i;
+	df_element->type = DF_ELEMENT_TInt;
+	// free(df_element->node.Str);
 }
 
 void DF_INT_TO_STR(DF_ELEMENT* df_element){
-	itoa(df_element->node.Int, df_element->node.Str, 10);
+    sprintf(df_element->node.Str, "%d", df_element->node.Int);
 }
+
+// void DF_INT_TO_STR(DF_ELEMENT* df_element){
+// 	itoa(df_element->node.Int, df_element->node.Str, 10);
+// }
 
 // this function allows a mapping of elements of a particular dataframe : 
 //typedef void (*cfun)();
@@ -274,18 +292,18 @@ void display_df(DATAFRAME *df){
 	printf("ROWS : %d\n", df->len_rows);
 	printf("COLS : %d\n", df->len_cols);
 
-	for(i = 1; i< df->len_rows;i++){
+	for(i = 0; i< df->len_rows;i++){
 		printf("[ ");
 		for(j = 0; j< df->len_cols; j++){
 			if(df->type == DF_ELEMENT_TStr){
 				printf("%s ", df->data[i][j].node.Str);
 			}
 			else if(df->type == DF_ELEMENT_TInt){
-				printf("%d ", df->data[i][j].node.Int);
+				printf("%03d ", df->data[i][j].node.Int);
 			}
 			
 		}
-		printf(" ]\n");
+		printf("]\n");
 	}
 
 }
