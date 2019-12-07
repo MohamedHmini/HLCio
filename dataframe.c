@@ -286,13 +286,13 @@ TYEP type_of(char data_element){
 
 */
 
-void display_df(DATAFRAME *df){
+void display_df(DATAFRAME *df, int start){
 	int i,j;
 
 	printf("ROWS : %d\n", df->len_rows);
 	printf("COLS : %d\n", df->len_cols);
 
-	for(i = 0; i< df->len_rows;i++){
+	for(i = start; i< df->len_rows;i++){
 		printf("[ ");
 		for(j = 0; j< df->len_cols; j++){
 			if(df->type == DF_ELEMENT_TStr){

@@ -98,7 +98,7 @@ void DF_STR_TO_INT(DF_ELEMENT*);
 void DF_INT_TO_STR(DF_ELEMENT*);
 void df_map(DATAFRAME *,void (*fun)(DF_ELEMENT* df_element), int);
 void df_retype(DATAFRAME *, DF_ELEMENT_TYPE, int);
-void display_df(DATAFRAME *);
+void display_df(DATAFRAME *, int);
 void show(DATAFRAME *);
 
 
