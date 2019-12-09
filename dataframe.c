@@ -37,6 +37,10 @@ void df_free(DATAFRAME *df){
 }
 
 
+DF_ELEMENT* df_element_create(){
+	return malloc(sizeof(DF_ELEMENT));
+}
+
 
 DF_ELEMENT arrcreate(int size){
 	DF_ELEMENT e;
