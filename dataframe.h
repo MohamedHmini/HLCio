@@ -81,7 +81,7 @@ typedef struct CMP_RESULT{
 
 
 DATAFRAME *Dataframe(int,int , DF_DATA_CONTAINER );
-void df_free(DATAFRAME *df);
+void df_free(DATAFRAME *, int);
 DF_ELEMENT* df_element_create();
 DF_ELEMENT arrcreate(int);
 DF_ELEMENT arrinit(int, DF_ELEMENT);

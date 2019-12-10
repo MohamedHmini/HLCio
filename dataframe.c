@@ -25,8 +25,8 @@ DATAFRAME *Dataframe(
 }
 
 
-void df_free(DATAFRAME *df){
-	for(int i = 0; i<df->len_rows; i++){
+void df_free(DATAFRAME *df, int startswith){
+	for(int i = startswith; i<df->len_rows; i++){
 		for(int j = 0; j< df->len_cols;j++){
 			arrfree(&df->data[i][j]);
 		}
@@ -38,7 +38,7 @@ void df_free(DATAFRAME *df){
 
 
 DF_ELEMENT* df_element_create(){
-	return malloc(sizeof(DF_ELEMENT));
+	return (DF_ELEMENT*) malloc(sizeof(DF_ELEMENT));
 }
 
 
@@ -77,7 +77,9 @@ void arrfree(DF_ELEMENT *arr){
 					// free(&arr->node.Arr->data[i]);
 				}
 				free(arr->node.Arr->data);
+				arr->node.Arr->data = NULL;
 				free(arr->node.Arr);
+				arr->node.Arr = NULL;
 			}break;
 			case DF_ELEMENT_TStr:{
 				// free(arr->node.Str);
