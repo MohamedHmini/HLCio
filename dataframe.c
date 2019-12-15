@@ -30,10 +30,13 @@ void df_free(DATAFRAME *df, int startswith){
 		for(int j = 0; j< df->len_cols;j++){
 			arrfree(&df->data[i][j]);
 		}
-		free(df->data[i]);
+		if(df->data[i] != NULL)
+			free(df->data[i]);
 	}	
-	free(df->data);
-	free(df);
+	if(df->data != NULL)
+		free(df->data);
+	if(df != NULL)
+		free(df);
 }
 
 
@@ -82,7 +85,8 @@ void arrfree(DF_ELEMENT *arr){
 				arr->node.Arr = NULL;
 			}break;
 			case DF_ELEMENT_TStr:{
-				// free(arr->node.Str);
+				free(arr->node.Str);
+				arr->node.Str = NULL;
 			}break;
 			default:{
 				
@@ -105,7 +109,7 @@ void arrpop(DF_ELEMENT *arr){
 void arrshow(DF_ELEMENT *arr){
 	printf("\n[ ");
 	for(int i = 0; i < arr->node.Arr->size; i++){
-		printf("%d ", arr->node.Arr->data[i].node.Int);
+		printf("%d, ", arr->node.Arr->data[i].node.Int);
 	}
 	printf("]");
 }

@@ -50,40 +50,85 @@ char* get_line(FILE *file){
 	if(line != NULL){
 		line[buff] = '\0';
 	}
-		
-
-	// printf("%s\n", line);
+	
 	return line;
 }
 
 
-char** read_lines(FILE *file){
+
+char** read_lines(FILE *file, int starts_from){
 	char** lines = NULL;
 	char* line = NULL;
-	line = get_line(file);
 	int row_i = 0;
 
-	while(line != NULL){
-		// printf("%d\n",row_i);
-		row_i++;
-		char** checker = realloc(lines, sizeof(char*) * (row_i + 1));
+	while((line = get_line(file)) != NULL){
+		if(starts_from == 0){
+			row_i++;
+			char** checker = realloc(lines, sizeof(char*) * (row_i + 1));
 
-		if(checker == NULL){
-			free(checker);
-			break;
+			if(checker == NULL){
+				free(checker);
+				break;
+			}
+			else
+			{
+				lines = checker;
+			}
+
+			lines[row_i - 1] = strdup(line);
+			free(line);
+			// lines[row_i - 1] = line;
 		}
 		else
-		{
-			lines = checker;
-		}
+			starts_from--;
 		
-		lines[row_i - 1] = line;
-		line = get_line(file);
 	}
-
 	// printf("done\n");
 	lines[row_i] = NULL;
 	return lines;
+}
+
+
+FILE_CONTENT read_lines_in_FC(FILE *file, int starts_from, int ends_at){
+	FILE_CONTENT fc;
+    fc.content = NULL;
+    fc.r = 0;
+	char* line = NULL;
+	int counter = starts_from;
+
+	while((line = get_line(file)) != NULL){
+		if(counter == 0 && (ends_at - starts_from) >= 0){
+			fc.r++;
+			char** checker = realloc(fc.content, sizeof(char*) * (fc.r + 1));
+
+			if(checker == NULL){
+				free(checker);
+				break;
+			}
+			else
+			{
+				fc.content = checker;
+			}
+			
+			fc.content[fc.r - 1] = line;
+			ends_at--;
+		}
+		else
+			counter--;
+		
+		
+	}
+
+	fc.content[fc.r] = NULL;
+	return fc;
+}
+
+
+void FC_free(FILE_CONTENT fc){
+    for(int i = 0;i<fc.r; i++){
+        free(fc.content[i]);
+    }
+    free(fc.content);
 }
 
 
@@ -106,7 +151,6 @@ DF_ELEMENT_CONTAINER tokenize_line(DATAFRAME *df, char* line, char* tokenizer){
 			tokenized_line = checker;
 		}
 		
-		tokenized_line[i - 1].node.Str = NULL;
 		tokenized_line[i - 1].type = ch.type;
 		tokenized_line[i - 1].node.Str = ch.node.Str;
 		ch.node.Str = strtok(NULL, tokenizer);
@@ -121,7 +165,7 @@ void tokenize(DATAFRAME *df, char** lines, char* tokenizer){
 
 	DF_DATA_CONTAINER tokenized_lines = NULL;
 	DF_ELEMENT_CONTAINER dec = NULL;
-	char* line = lines[0];
+	char* line = strdup(lines[0]);
 	int i = 1;
 	
 	while(line != NULL){
@@ -141,25 +185,32 @@ void tokenize(DATAFRAME *df, char** lines, char* tokenizer){
 		// free(line);
 		
 		i++;
-		line = lines[i - 1];
+
+		if(lines[i - 1] != NULL){
+			line = strdup(lines[i - 1]);
+			free(lines[i - 1]);
+		}
+		else
+			line = NULL;
 		// printf("i:%d, line:%s\n",i - 1,line);
 		
 	}
-	free(line);
+
+	// free(line);
 	df->len_rows = i - 1;
 	df->type = DF_ELEMENT_TStr;
 	df->data = NULL;
 	df->data = tokenized_lines;
+	free(lines);
 }
 
 
 
-DATAFRAME *csv_to_df(FILE *csv, char *delimiter){
+DATAFRAME *csv_to_df(FILE *csv, int starts_from, char *delimiter){
 	DATAFRAME *df = NULL;
 	df = Dataframe(0,0,NULL); 
 	char** lines = NULL;
-	lines = read_lines(csv);
+	lines = read_lines(csv, starts_from);
 	tokenize(df, lines, delimiter);
-	free(lines);
 	return df;
 }

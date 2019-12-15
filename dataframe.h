@@ -67,12 +67,6 @@ typedef struct DATAFRAME{
 
 
 
-typedef struct GENERATOR{
-	DF_ELEMENT (*Next)();
-	DF_ELEMENT current;
-	int size;
-}GENERATOR;
-
 
 typedef struct CMP_RESULT{
 	DF_ELEMENT best;
